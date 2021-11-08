@@ -1,5 +1,6 @@
 import Perso from "./perso.js";
 import Sprite from "./sprite.js";
+import Tir from "./tir.js";
 let cnv = document.getElementById("myCanvas");
 let ctx = cnv.getContext("2d");
 const fps = 60;
@@ -17,6 +18,7 @@ background2.src = "./assets/background.png"
 let bgx = 0;
 let bgx2 = background.width*1.4;
 let bgs = 2;
+let tirvec = [];
 
 function backgloop(){
   if(bgx2 == 0){
@@ -45,6 +47,10 @@ document.addEventListener("keydown", (event) => {
   if(keysPressed["s"] && event.key == "q" || keysPressed["q"] && event.key == "s" ){
     perso.stop_fly();
     perso.fly_left();
+  }
+  if(keysPressed["j"]){
+    let tir = new Tir(perso.posx,perso.posx);
+    tirvec.push(tir);
   }
   if(keysPressed["z"]){
     perso.fly();
@@ -82,6 +88,11 @@ function update() {
   feu.posY = perso.posy + 40;
   feu.draw();
   perso.draw();
+  for(let i = 0 ; i < tirvec.length;i++){
+    tirvec[i].draw(cnv.width);
+    tirvec[i].move();
+  }
+
   setTimeout(() => {
     requestAnimationFrame(update);
   }, 1000 / fps);
