@@ -6,6 +6,8 @@ export default class Tir {
         this.img.src = "./assets/tir.png";
         this.cnv = document.getElementById("myCanvas");
         this.ctx = this.cnv.getContext("2d");
+        this.state = true;
+        this.tirspeed = 40;
     }
     draw(limite){
         if(this.x < limite){
@@ -15,8 +17,12 @@ export default class Tir {
                 this.y,
             );
         }
+        else{
+            this.state = false;
+        }
     }
     move(){
-        this.x+=20;
+        this.x+= this.tirspeed;
+        this.tirspeed += 5;
     }
 }

@@ -29,10 +29,37 @@ function backgloop(){
   }
 }
 
+function tirstart(){
+  let tir = new Tir(perso.posx+30,perso.posy+28);
+  tirvec.push(tir);
+}
+
+
 document.addEventListener("keydown", (event) => {
   keysPressed[event.key] = true;
 
-  if(keysPressed["z"] && event.key == "d" || keysPressed["d"] && event.key == "z" ){
+  if(keysPressed["z"] && event.key == "d" && event.key == "j" || keysPressed["d"] && event.key == "z" && event.key == "j"){
+    perso.fly();
+    perso.fly_right();
+    tirstart();
+  }
+  if(keysPressed["z"] && event.key == "q" && event.key == "j" || keysPressed["q"] && event.key == "z" && event.key == "j"){
+    perso.fly();
+    perso.fly_left();
+    tirstart();
+  }
+  if(keysPressed["s"] && event.key == "d" && event.key == "j" || keysPressed["d"] && event.key == "s" && event.key == "j"){
+    perso.stop_fly();
+    perso.fly_right();
+    tirstart();
+  }
+  if(keysPressed["s"] && event.key == "q" && event.key == "j" || keysPressed["q"] && event.key == "s" && event.key == "j"){
+    perso.stop_fly();
+    perso.fly_left();
+    tirstart();
+  }
+
+  if(keysPressed["z"] && event.key == "d"  || keysPressed["d"] && event.key == "z" ){
     perso.fly();
     perso.fly_right();
   }
@@ -49,8 +76,7 @@ document.addEventListener("keydown", (event) => {
     perso.fly_left();
   }
   if(keysPressed["j"]){
-    let tir = new Tir(perso.posx,perso.posx);
-    tirvec.push(tir);
+    tirstart();
   }
   if(keysPressed["z"]){
     perso.fly();
@@ -91,6 +117,9 @@ function update() {
   for(let i = 0 ; i < tirvec.length;i++){
     tirvec[i].draw(cnv.width);
     tirvec[i].move();
+    if(tirvec[i].state == false){
+      tirvec.splice(i, 1);
+    }
   }
 
   setTimeout(() => {
