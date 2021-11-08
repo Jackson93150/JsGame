@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="16" height="1" tilewidth="28" tileheight="40" infinite="0" nextlayerid="2" nextobjectid="1">
+ <layer id="1" name="Calque de Tuiles 1" width="16" height="1">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+</map>
