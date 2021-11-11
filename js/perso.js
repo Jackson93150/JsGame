@@ -14,6 +14,7 @@ export default class Perso {
         this.turbo_stop = 0.15;
         this.movement_left = -0.07;
         this.movement_right = 0.07;
+        this.pv = 10;
     }
     draw(){
         this.ctx.drawImage(

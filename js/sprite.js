@@ -11,6 +11,10 @@ export default class Sprite { // on va créer une class ou l'on va mettre les fo
       this.anim_id = -1;
       this.cnv = document.getElementById("myCanvas");
       this.ctx = this.cnv.getContext("2d");
+      this.slow = 3;
+      this.sslow = 3;
+      this.state = false;
+      this.hp = 5;
     }
     load(){
       let canvas1 = document.createElement("canvas");
@@ -41,13 +45,14 @@ export default class Sprite { // on va créer une class ou l'on va mettre les fo
           this.Lx,
           this.Ly
         );
-        this.anim_id += 1;
+        if(this.slow == 1){
+          this.anim_id += 1;
+          this.slow = this.sslow;
+        }
+        this.slow -= 1;
         if (this.anim_id == this.all_img.length) {
           this.anim_id = 0;
         }
       }
-    }
-    clear(){
-      this.ctx.clearRect(0, 0, this.cnv.width, this.cnv.height);
     }
 }

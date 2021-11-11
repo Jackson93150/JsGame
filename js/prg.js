@@ -13,13 +13,20 @@ feu.img.onload = function () {
 let keysPressed = {};
 let background = new Image();
 background.src = "./assets/background.png";
-let background2 = new Image();
-background2.src = "./assets/background.png";
 let bgx = 0;
-let bgx2 = background.width * 1.4;
-let bgs = 2;
+let bgs = 0.5;
 let tirvec = [];
+let alitirvec = [];
 let alienvec = [];
+let portal = new Sprite(640,640,background.width*1.4-400,cnv.height/2+100,8,1);
+portal.img.src = "./assets/portal.png";
+portal.img.onload = function () {
+  portal.load();
+};
+portal.slow = 6;
+portal.sslow = 6;
+let explosionvec = [];
+
 
 function getRandom(min, max) {
   return Math.random() * (max - min) + min;
@@ -27,24 +34,29 @@ function getRandom(min, max) {
 
 function spawnAlien(){
   let y = getRandom(0,cnv.height-82);
+  let y2 = getRandom(0,cnv.height/2)
   let ali = new Sprite(82, 62, cnv.width, y, 20, 1);
   ali.img.src = "./assets/alien.png";
   ali.img.onload = function () {
     ali.load();
   };
+  let ali2 = new Sprite(82, 62, cnv.width, y2, 20, 1);
+  ali2.img.src = "./assets/alien.png";
+  ali2.img.onload = function () {
+    ali2.load();
+  };
   alienvec.push(ali);
+  alienvec.push(ali2);
 }
 
 function moveAlien(i){
   alienvec[i].posX -= 5;
 }
 
-function backgloop() {
-  if (bgx2 == 0) {
-    bgx = background.width * 1.4;
-  }
-  if (bgx == 0) {
-    bgx2 = background.width * 1.4;
+function backgstop() {
+  let z = cnv.width - background.width * 1.4;
+  if (bgx == z) {
+    bgs = 0;
   }
 }
 
@@ -53,9 +65,27 @@ function tirstart() {
   tirvec.push(tir);
 }
 
+function tircol(i){
+  for (let j = 0 ; j < tirvec.length ; j++){
+    if (tirvec[j].y > alienvec[i].posY + alienvec[i].Ly || tirvec[j].x + 23 < alienvec[i].posX || tirvec[j].y + 6 < alienvec[i].posY ||tirvec[j].x > alienvec[i].posX + alienvec[i].Lx) {
+    } 
+    else{
+      alienvec[i].state = true;
+      tirvec.splice(j,1);
+      let explosion = new Sprite(68,72,alienvec[i].posX,alienvec[i].posY,8,1);
+      explosion.img.src = "./assets/explosion.png";
+      explosion.img.onload = function () {
+        explosion.load();
+      };
+      explosion.slow = 5;
+      explosion.sslow = 5;
+      explosionvec.push(explosion);
+    }
+  }
+}
+
 document.addEventListener("keydown", (event) => {
   keysPressed[event.key] = true;
-
   if (
     (keysPressed["z"] && event.key == "d" && event.key == "j") ||
     (keysPressed["d"] && event.key == "z" && event.key == "j")
@@ -142,7 +172,7 @@ function update() {
   cnv.width = window.innerWidth;
   cnv.height = window.innerHeight;
   ctx.clearRect(0, 0, cnv.width, cnv.height);
-  backgloop();
+  backgstop();
   ctx.drawImage(
     background,
     bgx,
@@ -150,15 +180,9 @@ function update() {
     background.width * 1.4,
     background.height * 1.4
   );
-  ctx.drawImage(
-    background2,
-    bgx2,
-    0,
-    background.width * 1.4,
-    background.height * 1.4
-  );
+  portal.draw();
+  portal.posX -= bgs;
   bgx -= bgs;
-  bgx2 -= bgs;
   perso.limite(cnv.height);
   perso.limite2(0);
   perso.limite3(0);
@@ -168,6 +192,7 @@ function update() {
   feu.posY = perso.posy + 40;
   feu.draw();
   perso.draw();
+
   for (let i = 0; i < tirvec.length; i++) {
     tirvec[i].draw(cnv.width);
     tirvec[i].move();
@@ -175,16 +200,62 @@ function update() {
       tirvec.splice(i, 1);
     }
   };
+
+  for(let i = 0; i < alienvec.length; i++) {
+    tircol(i);
+  }
+
   for(let i = 0; i < alienvec.length; i++) {
     alienvec[i].draw();
     moveAlien(i);
-  };
+    if(alienvec[i].anim_id == 12){
+      if(alienvec[i].slow == 2){
+        let fball = new Sprite(32, 32, alienvec[i].posX+20, alienvec[i].posY+15, 6, 1);
+        fball.img.src = "./assets/fireball.png";
+        fball.img.onload = function () {
+          fball.load();
+        };
+        alitirvec.push(fball);
+      }
+    }
+    if(alienvec[i].posX < -82 || alienvec[i].state == true){
+      alienvec.splice(i,1);
+    }
+  }
+
+  for(let i = 0; i < alitirvec.length; i++){
+    if (perso.posy > alitirvec[i].posY + alitirvec[i].Ly || perso.posx + 30 < alitirvec[i].posX || perso.posy + 58 < alitirvec[i].posY ||perso.posx > alitirvec[i].posX + alitirvec[i].Lx) {
+      alitirvec[i].draw();
+      alitirvec[i].posX -= 15;
+      if(alitirvec[i].posX < -32){
+        alitirvec.splice(i,1);
+      }
+    }
+    else{
+      perso.pv -= 1;
+      alitirvec.splice(i,1);
+    }
+  }
+
+  for(let i = 0; i < explosionvec.length;i++){
+    if(explosionvec[i].anim_id == 4){
+      explosionvec.splice(i,1);
+    }
+    else{
+      explosionvec[i].draw();
+    }
+  }
+
+  if(bgs == 0){
+    clearInterval(alinter);
+  }
 
   setTimeout(() => {
     requestAnimationFrame(update);
   }, 1000 / fps);
 }
 
-setInterval(spawnAlien,1000);
+var alinter = setInterval(spawnAlien,2000);
 
 update();
+
