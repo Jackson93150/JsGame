@@ -18,6 +18,7 @@ let bgs = 0.5;
 let tirvec = [];
 let alitirvec = [];
 let alienvec = [];
+let start = false;
 let portal = new Sprite(640,640,background.width*1.4-400,cnv.height/2+100,8,1);
 portal.img.src = "./assets/portal.png";
 portal.img.onload = function () {
@@ -26,7 +27,45 @@ portal.img.onload = function () {
 portal.slow = 6;
 portal.sslow = 6;
 let explosionvec = [];
+let healthbar = new Sprite(604,80,0,0,1,10);
+healthbar.img.src = "./assets/healthbar.png";
+healthbar.img.onload = function () {
+  healthbar.load();
+};
 
+let energy = new Sprite(604,108.83,0,0,1,6);
+energy.img.src = "./assets/energy.png";
+energy.img.onload = function () {
+  energy.load();
+};
+
+let zawarudo = new Sprite(1282,722.83,0,0,1,43);
+zawarudo.img.src = "./assets/zawarudo.png";
+zawarudo.img.onload = function () {
+  zawarudo.load();
+};
+
+function playback(){
+  var myAudio = new Audio('./assets/fond.mp3');
+  myAudio.play();
+}
+
+function scaleZa(){
+  zawarudo.hRatio = cnv.width / zawarudo.Lx;
+  zawarudo.vRatio = cnv.height / zawarudo.Ly;
+  zawarudo.centerShift_x = (cnv.width - zawarudo.Lx*zawarudo.hRatio ) / 2;
+  zawarudo.centerShift_y = (cnv.height - zawarudo.Ly*zawarudo.vRatio ) / 2;
+}
+
+function ZaWarudoTokiOTomare(){
+  if(zawarudo.state == true){
+    zawarudo.drawScale();
+    if(zawarudo.anim_id == 42){
+      zawarudo.state = false;
+      zawarudo.anim_id = 0;
+    }
+  }
+}
 
 function getRandom(min, max) {
   return Math.random() * (max - min) + min;
@@ -80,6 +119,12 @@ function tircol(i){
       explosion.slow = 5;
       explosion.sslow = 5;
       explosionvec.push(explosion);
+      var myAudio = new Audio('./assets/explosion.mp3');
+      myAudio.volume = 0.1;
+      myAudio.play();
+      if(energy.anim_id != 5){
+        energy.anim_id += 1;
+      }
     }
   }
 }
@@ -150,6 +195,20 @@ document.addEventListener("keydown", (event) => {
   if (keysPressed["j"]) {
     tirstart();
   }
+  if (keysPressed["Enter"]) {
+    if(start == false){
+      playback();
+      start = true;
+    }
+  }
+  if (keysPressed["i"]) {
+    if(energy.anim_id == 5){
+      zawarudo.state = true;
+      energy.anim_id = 0;
+      var myAudio = new Audio('./assets/zawarudo.mp3');
+      myAudio.play();
+    }
+  }
   if (keysPressed["z"]) {
     perso.fly();
   }
@@ -173,6 +232,7 @@ function update() {
   cnv.height = window.innerHeight;
   ctx.clearRect(0, 0, cnv.width, cnv.height);
   backgstop();
+  scaleZa();
   ctx.drawImage(
     background,
     bgx,
@@ -206,6 +266,11 @@ function update() {
   }
 
   for(let i = 0; i < alienvec.length; i++) {
+    if(zawarudo.state == true){
+      alienvec[i].posX += 5;
+      alienvec[i].slow = 9;
+      alienvec[i].sslow = 9;
+    }
     alienvec[i].draw();
     moveAlien(i);
     if(alienvec[i].anim_id == 12){
@@ -224,16 +289,28 @@ function update() {
   }
 
   for(let i = 0; i < alitirvec.length; i++){
+    if(zawarudo.state == true){
+      alitirvec[i].posX += 15
+      alitirvec[i].slow = 9;
+      alitirvec[i].sslow = 9;
+    }
     if (perso.posy > alitirvec[i].posY + alitirvec[i].Ly || perso.posx + 30 < alitirvec[i].posX || perso.posy + 58 < alitirvec[i].posY ||perso.posx > alitirvec[i].posX + alitirvec[i].Lx) {
       alitirvec[i].draw();
       alitirvec[i].posX -= 15;
       if(alitirvec[i].posX < -32){
-        alitirvec.splice(i,1);
+        if(zawarudo.state == false){
+          alitirvec.splice(i,1);
+        }
       }
     }
     else{
       perso.pv -= 1;
-      alitirvec.splice(i,1);
+      if (healthbar.anim_id != 9){
+        healthbar.anim_id += 1;
+      }
+      if(zawarudo.state == false){
+        alitirvec.splice(i,1);
+      }
     }
   }
 
@@ -246,6 +323,9 @@ function update() {
     }
   }
 
+  ZaWarudoTokiOTomare();
+  healthbar.drawSlice();
+  energy.drawSlice();
   if(bgs == 0){
     clearInterval(alinter);
   }
@@ -256,6 +336,5 @@ function update() {
 }
 
 var alinter = setInterval(spawnAlien,2000);
-
 update();
 
