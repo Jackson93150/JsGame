@@ -16,10 +16,10 @@ export default class Sprite {
     this.sslow = 3;
     this.state = false;
     this.hp = 5;
-    this.hRatio = 1;
-    this.vRatio = 1;
-    this.centerShift_x = 1;
-    this.centerShift_y = 1;
+    this.hRatio = 1.5;
+    this.vRatio = 1.5;
+    this.centerShift_x = 0;
+    this.centerShift_y = 0;
   }
   load() {
     let canvas1 = document.createElement("canvas");
@@ -104,8 +104,5 @@ export default class Sprite {
         this.Ly
       );
     }
-  }
-  timestop(){
-    
   }
 }

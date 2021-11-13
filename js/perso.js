@@ -75,5 +75,25 @@ export default class Perso {
             break;
         }
     }
+    stop(){
+        this.acceleration = 0;
+        this.acceleration2 = 0;
+        this.speedx = 0;
+        this.speedy = 0;
+        this.turbo_power = 0;
+        this.turbo_stop = 0;
+        this.movement_left = 0.;
+        this.movement_right = 0;
+    }
+    restart(){
+        this.acceleration = 0;
+        this.acceleration2 = 0;
+        this.speedx = 0;
+        this.speedy = 0;
+        this.turbo_power = -0.25;
+        this.turbo_stop = 0.15;
+        this.movement_left = -0.07;
+        this.movement_right = 0.07;
+    }
 }
 
