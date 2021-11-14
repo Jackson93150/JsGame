@@ -71,6 +71,25 @@ export default class Sprite {
       }
     }
   }
+  drawback() {
+    if (this.anim_id >= 0) {
+      this.ctx.drawImage(
+        this.all_img[this.anim_id],
+        this.posX,
+        this.posY,
+        this.Lx,
+        this.Ly
+      );
+      if (this.slow == 1) {
+        this.anim_id -= 1;
+        this.slow = this.sslow;
+      }
+      this.slow -= 1;
+      if (this.anim_id == 0) {
+        this.anim_id = this.all_img.length;
+      }
+    }
+  }
   drawScale() {
     if (this.anim_id >= 0) {
       this.ctx.drawImage(
