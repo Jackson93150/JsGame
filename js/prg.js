@@ -1,6 +1,7 @@
 import Perso from "./perso.js";
 import Sprite from "./sprite.js";
 import Tir from "./tir.js";
+import Dio from "./dio.js";
 let cnv = document.getElementById("myCanvas");
 let ctx = cnv.getContext("2d");
 const fps = 60;
@@ -10,11 +11,13 @@ feu.img.src = "./assets/feu.png";
 feu.img.onload = function () {
   feu.load();
 };
-let dio = new Sprite(139.26,134,0,0,19,1);
+
+let dio = new Dio(139.2,120,0,0,19,1);
 dio.img.src = "./assets/dio.png";
 dio.img.onload = function () {
   dio.load();
 };
+
 let keysPressed = {};
 let background = new Image();
 background.src = "./assets/background.png";
@@ -279,6 +282,43 @@ function stoplv2(){
         healthbar.anim_id = 0;
       }
     }
+    dio.posY = cnv.height;
+  }
+}
+
+function changeattack(){
+  if(dio.attack == 0){
+    dio.attack = 1;
+  }
+}
+
+function knifeattack(){
+  if(dio.attack == 1){
+    if(dio.state == false){
+      dio.knife = 0;
+      dio.Lx = 200;
+      dio.Ly = 167;
+      dio.RepetX = 11;
+      dio.img.src = "./assets/dioknife.png";
+      dio.img.onload = function () {
+        dio.load();
+      };
+      dio.state = true;
+    }
+    if(dio.state == true){
+      dio.knife +=1;
+      if(dio.knife == 33){
+        dio.Lx = 139.2;
+        dio.Ly = 120;
+        dio.RepetX = 19;
+        dio.img.src = "./assets/dioknife.png";
+        dio.img.onload = function () {
+          dio.load();
+        };
+        dio.state = false;
+        dio.attack = 0;
+      }
+    }
   }
 }
 
@@ -391,6 +431,7 @@ document.addEventListener("keydown", (event) => {
       else{
         perso.img.src = "./assets/perso2.png";
         newarme = true;
+        dio.posY = cnv.height;
       }
     }
   }
@@ -435,7 +476,6 @@ function level0(){
     background.width * 1.4,
     background.height * 1.4
   );
-  dio.draw();
   starto.hRatio = cnv.width / starto.Lx;
   starto.vRatio = cnv.height / starto.Ly;
   starto.centerShift_x = (cnv.width - starto.Lx * starto.hRatio) / 2;
@@ -633,8 +673,6 @@ function level2() {
   ZaWarudoTokiOTomare();
   healthbar.drawSlice();
   energy.drawSlice();
-  dio.posX = 200;
-  dio.posY = 200;
 }
 
 function level3(){
@@ -642,6 +680,7 @@ function level3(){
   background3.vRatio = (cnv.height / background3.Ly)*background3.hRatio;
   background3.centerShift_x = (cnv.width - background3.Lx * background3.hRatio) / 2;
   background3.drawScale();
+  dio.posX = cnv.width-140;
   if(teleportation2.state == false){
     teleportation2.drawback();
   }
@@ -659,6 +698,7 @@ function level3(){
     if(bgx3 < 300){
       background3.posY+=1;
       bgx3+=1;
+      dio.posY-=1;
       konodio.centerShift_x = cnv.width;
     }
   }
@@ -700,6 +740,9 @@ function level3(){
   }
   feu.draw();
   perso.draw();
+  if(dio.attack == 1){
+    knifeattack();
+  }
   dio.draw();
   ZaWarudoTokiOTomare();
   healthbar.drawSlice();
@@ -729,4 +772,5 @@ function update() {
 
 var alinter = setInterval(spawnAlien, 2000);
 setInterval(changestate, 3000);
+setInterval(changeattack, 8000);
 update();
