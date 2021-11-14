@@ -7,7 +7,7 @@ export default class Tir {
         this.cnv = document.getElementById("myCanvas");
         this.ctx = this.cnv.getContext("2d");
         this.state = true;
-        this.tirspeed = 40;
+        this.tirspeed = 50;
     }
     draw(limite){
         if(this.x < limite){
@@ -23,6 +23,5 @@ export default class Tir {
     }
     move(){
         this.x+= this.tirspeed;
-        this.tirspeed += 5;
     }
 }
