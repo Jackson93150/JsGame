@@ -287,15 +287,12 @@ function stoplv2(){
 }
 
 function changeattack(){
-  if(dio.attack == 0){
-    dio.attack = 1;
-  }
+  dio.attack = 1;
 }
 
 function knifeattack(){
   if(dio.attack == 1){
     if(dio.state == false){
-      dio.knife = 0;
       dio.Lx = 200;
       dio.Ly = 167;
       dio.RepetX = 11;
@@ -303,21 +300,8 @@ function knifeattack(){
       dio.img.onload = function () {
         dio.load();
       };
+      dio.anim_id = 0;
       dio.state = true;
-    }
-    if(dio.state == true){
-      dio.knife +=1;
-      if(dio.knife == 33){
-        dio.Lx = 139.2;
-        dio.Ly = 120;
-        dio.RepetX = 19;
-        dio.img.src = "./assets/dioknife.png";
-        dio.img.onload = function () {
-          dio.load();
-        };
-        dio.state = false;
-        dio.attack = 0;
-      }
     }
   }
 }
@@ -720,6 +704,7 @@ function level3(){
     if(konodio.anim_id == 48){
       konodio.state = true;
       konodio.hp = 5;
+      setTimeout(changeattack, 3000);
     }
   }
   perso.limite(cnv.height);
@@ -740,9 +725,7 @@ function level3(){
   }
   feu.draw();
   perso.draw();
-  if(dio.attack == 1){
-    knifeattack();
-  }
+  knifeattack();
   dio.draw();
   ZaWarudoTokiOTomare();
   healthbar.drawSlice();
@@ -772,5 +755,4 @@ function update() {
 
 var alinter = setInterval(spawnAlien, 2000);
 setInterval(changestate, 3000);
-setInterval(changeattack, 8000);
 update();
