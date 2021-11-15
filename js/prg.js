@@ -24,6 +24,30 @@ dioknife.img.onload = function () {
   dioknife.load();
 };
 
+let summon = new Sprite(960, 540, 0, 0, 1, 54);
+summon.img.src = "./assets/summon.png";
+summon.img.onload = function () {
+  summon.load();
+};
+
+let muda = new Sprite(200, 169, 0, 0, 20, 1);
+muda.img.src = "./assets/muda.png";
+muda.img.onload = function () {
+  muda.load();
+};
+
+let roadrollersummon = new Sprite(960, 540, 0, 0, 1, 54);
+roadrollersummon.img.src = "./assets/roadrollersummon.png";
+roadrollersummon.img.onload = function () {
+  roadrollersummon.load();
+};
+
+let roadroller = new Sprite(193, 333, 0, 0, 1, 1);
+roadroller.img.src = "./assets/roadroller.png";
+roadroller.img.onload = function () {
+  roadroller.load();
+};
+
 let knifevec = [];
 
 let keysPressed = {};
@@ -93,16 +117,11 @@ zawarudo.img.onload = function () {
   zawarudo.load();
 };
 
-zawarudo.slow = 2;
-zawarudo.sslow = 2;
-
 let konodio = new Sprite(960,540, 0, 0, 1, 49);
 konodio.img.src = "./assets/konodio.png";
 konodio.img.onload = function () {
   konodio.load();
 };
-konodio.slow = 2;
-konodio.sslow = 2;
 
 let teleportation = new Sprite(64, 64, perso.posx, perso.posy, 4, 8);
 teleportation.img.src = "./assets/teleportation.png";
@@ -177,6 +196,9 @@ function beamcol() {
             perso.pv -= 1;
             if (healthbar.anim_id != 9) {
               healthbar.anim_id += 1;
+            }
+            if (energy.anim_id != 5) {
+              energy.anim_id += 1;
             }
             beamvec[i].state = true;
           }
@@ -278,11 +300,14 @@ function backgstop() {
 }
 
 function attackchange(){
-  if(dio.hp < 66){
+  if(dio.hp < 35){
     dio.attack = 2;
   }
-  if(dio.hp < 33){
+  if(dio.hp < 20){
     dio.attack = 3;
+  }
+  if(dio.hp < 10){
+    dio.attack = 4;
   }
 }
 
@@ -326,8 +351,11 @@ function tircoldio(d){
 
     }
     else{
-      d.hp-=2;
+      dio.hp -= 0.25;
       tirvec.splice(i, 1);
+      if (energy.anim_id != 5) {
+        energy.anim_id += 1;
+      }
     }
   }
 }
@@ -686,6 +714,7 @@ function level2() {
 }
 
 function level3(){
+  scaleZa();
   background3.hRatio = cnv.width / background3.Lx;
   background3.vRatio = (cnv.height / background3.Ly)*background3.hRatio;
   background3.centerShift_x = (cnv.width - background3.Lx * background3.hRatio) / 2;
@@ -739,7 +768,7 @@ function level3(){
   perso.limite2(0);
   perso.limite3(0);
   perso.limite4(cnv.width);
-  if(konodio.hp == 5){
+  if(konodio.hp == 5 && muda.state == false){
     perso.setup_gravity();
   }
   feu.posX = perso.posx - 4;
@@ -751,9 +780,92 @@ function level3(){
       tirvec.splice(i, 1);
     }
   }
+  if(dio.attack == 3){
+    muda.state = false;
+    if(roadrollersummon.anim_id == 0){
+      var myAudio = new Audio("./assets/roadrollerda.mp3");
+      myAudio.play();
+    }
+    if(roadrollersummon.anim_id != 53){
+      roadrollersummon.hRatio = cnv.width / roadrollersummon.Lx;
+      roadrollersummon.vRatio = cnv.height / roadrollersummon.Ly;
+      roadrollersummon.centerShift_x = (cnv.width - roadrollersummon.Lx * roadrollersummon.hRatio) / 2;
+      roadrollersummon.centerShift_y = (cnv.height - roadrollersummon.Ly * roadrollersummon.vRatio) / 2;
+      roadrollersummon.drawScale();
+      roadroller.posY = -roadroller.Ly;
+      roadroller.posX = perso.posx;
+    }
+    if(roadrollersummon.anim_id == 53){
+      roadroller.draw();
+      if(zawarudo.state == false){
+        roadroller.posY+=40;
+      }
+      if(perso.posy > roadroller.posY + roadroller.Ly || perso.posx + 30 < roadroller.posX || perso.posy + 58 < roadroller.posY || perso.posx > roadroller.posX + roadroller.Lx){
+      }
+      else{
+        perso.pv -= 1;
+        if (healthbar.anim_id != 9) {
+          healthbar.anim_id += 1;
+        }
+      }
+      if(roadroller.posY > cnv.height){
+        dio.posY = cnv.height/2;
+        dio.draw();
+        tircoldio(dio);
+        if(dio.anim_id == 18){
+          roadrollersummon.anim_id = 0;
+          dio.anim_id = 0;
+        }
+        if(zawarudo.state == true){
+          if(dio.anim_id > 0){
+            dio.anim_id -= 1;
+          }
+          else{
+            dio.anim_id == 0;
+          }
+        }
+      }
+    }
+  }
+  if(dio.attack == 2){
+    if(summon.anim_id == 0){
+      var myAudio = new Audio("./assets/summon.mp3");
+      myAudio.play();
+    }
+    if(summon.anim_id != 53){
+      summon.hRatio = cnv.width / summon.Lx;
+      summon.vRatio = cnv.height / summon.Ly;
+      summon.centerShift_x = (cnv.width - summon.Lx * summon.hRatio) / 2;
+      summon.centerShift_y = (cnv.height - summon.Ly * summon.vRatio) / 2;
+      summon.drawScale();
+      muda.posY = perso.posy;
+      muda.posX = perso.posx;
+    }
+    if(summon.anim_id == 53){
+      muda.state = true;
+      muda.draw();
+      if(muda.anim_id == 19){
+        muda.hp -=1;
+      }
+      if(muda.hp == 0){
+        muda.state = false;
+        muda.anim_id = 0;
+        summon.anim_id = 0;
+        muda.hp = 5;
+      }
+    }
+    if(zawarudo.state == true){
+      muda.state = false;
+    }
+    dio.posY = cnv.height/2;
+    dio.draw();
+    tircoldio(dio);
+  }
   if(dio.attack == 1){
     if(dioknife.anim_id == 0){
-      dioknife.posY = perso.posy;
+      if(zawarudo.state == false){
+        dioknife.posY = perso.posy;
+      }
     }
     if(dioknife.anim_id == 6){
       let knife = new Sprite(173,129,dioknife.posX-173,dioknife.posY,1,1);
@@ -763,7 +875,15 @@ function level3(){
       };
       knifevec.push(knife);
     }
-    dioknife.draw();
+      dioknife.draw();
+    if(zawarudo.state == true){
+      if(dioknife.anim_id > 0){
+        dioknife.anim_id -= 1;
+      }
+      else{
+        dioknife.anim_id == 0;
+      }
+    }
     tircoldio(dioknife);
   }
   if(dio.attack == 0){
@@ -772,14 +892,16 @@ function level3(){
   }
   for(let i = 0 ; i < knifevec.length; i++){
     if (perso.posy > knifevec[i].posY + knifevec[i].Ly || perso.posx + 30 < knifevec[i].posX || perso.posy + 58 < knifevec[i].posY || perso.posx > knifevec[i].posX + knifevec[i].Lx){
-      knifevec[i].draw();
-      knifevec[i].posX -= 50;
+      if(zawarudo.state == false){
+        knifevec[i].draw();
+        knifevec[i].posX -= 30;
+      }
       if(knifevec[i].posX-200 < 0){
         knifevec.splice(i,1);
       }
     }
     else{
-      perso.pv -= 1;
+      perso.pv -= 2;
       if (healthbar.anim_id != 9) {
         healthbar.anim_id += 1;
       }

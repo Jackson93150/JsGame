@@ -15,7 +15,7 @@ export default class Dio {
     this.slow = 3;
     this.sslow = 3;
     this.state = false;
-    this.hp = 100;
+    this.hp = 50;
     this.hRatio = 1.5;
     this.vRatio = 1.5;
     this.centerShift_x = 0;
