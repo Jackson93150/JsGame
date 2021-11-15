@@ -277,6 +277,15 @@ function backgstop() {
   }
 }
 
+function attackchange(){
+  if(dio.hp < 66){
+    dio.attack = 2;
+  }
+  if(dio.hp < 33){
+    dio.attack = 3;
+  }
+}
+
 function tirstart() {
   let tir = new Tir(perso.posx + 40, perso.posy + 29);
   tirvec.push(tir);
@@ -304,6 +313,23 @@ function stoplv2(){
 
 function changeattack(){
   dio.attack = 1;
+}
+
+function tircoldio(d){
+  for (let i = 0; i < tirvec.length; i++) {
+    if (
+      tirvec[i].y > d.posY + d.Ly ||
+      tirvec[i].x + 23 < d.posX ||
+      tirvec[i].y + 6 < d.posY ||
+      tirvec[i].x > d.posX + d.Lx
+    ){
+
+    }
+    else{
+      d.hp-=2;
+      tirvec.splice(i, 1);
+    }
+  }
 }
 
 function tircol(i) {
@@ -738,9 +764,11 @@ function level3(){
       knifevec.push(knife);
     }
     dioknife.draw();
+    tircoldio(dioknife);
   }
   if(dio.attack == 0){
     dio.draw();
+    tircoldio(dio);
   }
   for(let i = 0 ; i < knifevec.length; i++){
     if (perso.posy > knifevec[i].posY + knifevec[i].Ly || perso.posx + 30 < knifevec[i].posX || perso.posy + 58 < knifevec[i].posY || perso.posx > knifevec[i].posX + knifevec[i].Lx){
@@ -763,6 +791,7 @@ function level3(){
   ZaWarudoTokiOTomare();
   healthbar.drawSlice();
   energy.drawSlice();
+  attackchange();
 }
 
 function update() {
