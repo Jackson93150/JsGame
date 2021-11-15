@@ -18,6 +18,14 @@ dio.img.onload = function () {
   dio.load();
 };
 
+let dioknife = new Sprite(200,167,0,0,11,1);
+dioknife.img.src = "./assets/dioknife.png";
+dioknife.img.onload = function () {
+  dioknife.load();
+};
+
+let knifevec = [];
+
 let keysPressed = {};
 let background = new Image();
 background.src = "./assets/background.png";
@@ -85,11 +93,16 @@ zawarudo.img.onload = function () {
   zawarudo.load();
 };
 
-let konodio = new Sprite(1280,720, 0, 0, 1, 49);
+zawarudo.slow = 2;
+zawarudo.sslow = 2;
+
+let konodio = new Sprite(960,540, 0, 0, 1, 49);
 konodio.img.src = "./assets/konodio.png";
 konodio.img.onload = function () {
   konodio.load();
 };
+konodio.slow = 2;
+konodio.sslow = 2;
 
 let teleportation = new Sprite(64, 64, perso.posx, perso.posy, 4, 8);
 teleportation.img.src = "./assets/teleportation.png";
@@ -97,11 +110,14 @@ teleportation.img.onload = function () {
   teleportation.load();
 };
 
-let teleportation2 = new Sprite(1280, 720, 0, 0, 1, 54);
+let teleportation2 = new Sprite(960, 540, 0, 0, 1, 54);
 teleportation2.img.src = "./assets/teleportation2.png";
 teleportation2.img.onload = function () {
   teleportation2.load();
 };
+
+teleportation2.slow = 2;
+teleportation2.sslow = 2;
 
 let beam = new Sprite(4564, 175, 200, 200, 1, 26);
 beam.img.src = "./assets/kamehameha.png";
@@ -269,8 +285,8 @@ function tirstart() {
 function stoplv2(){
   if(robotvec[0].hp == 3){
     perso.stop();
-    teleportation2.posX = perso.posx-640;
-    teleportation2.posY = perso.posy-360;
+    teleportation2.posX = perso.posx-480;
+    teleportation2.posY = perso.posy-270;
     teleportation2.draw();
     if(teleportation2.anim_id == 52){
       state = 3;
@@ -288,22 +304,6 @@ function stoplv2(){
 
 function changeattack(){
   dio.attack = 1;
-}
-
-function knifeattack(){
-  if(dio.attack == 1){
-    if(dio.state == false){
-      dio.Lx = 200;
-      dio.Ly = 167;
-      dio.RepetX = 11;
-      dio.img.src = "./assets/dioknife.png";
-      dio.img.onload = function () {
-        dio.load();
-      };
-      dio.anim_id = 0;
-      dio.state = true;
-    }
-  }
 }
 
 function tircol(i) {
@@ -665,6 +665,7 @@ function level3(){
   background3.centerShift_x = (cnv.width - background3.Lx * background3.hRatio) / 2;
   background3.drawScale();
   dio.posX = cnv.width-140;
+  dioknife.posX = cnv.width-200;
   if(teleportation2.state == false){
     teleportation2.drawback();
   }
@@ -705,6 +706,7 @@ function level3(){
       konodio.state = true;
       konodio.hp = 5;
       setTimeout(changeattack, 3000);
+      konodio.anim_id = 0;
     }
   }
   perso.limite(cnv.height);
@@ -723,10 +725,41 @@ function level3(){
       tirvec.splice(i, 1);
     }
   }
+  if(dio.attack == 1){
+    if(dioknife.anim_id == 0){
+      dioknife.posY = perso.posy;
+    }
+    if(dioknife.anim_id == 6){
+      let knife = new Sprite(173,129,dioknife.posX-173,dioknife.posY,1,1);
+      knife.img.src = "./assets/knife.png";
+      knife.img.onload = function () {
+        knife.load();
+      };
+      knifevec.push(knife);
+    }
+    dioknife.draw();
+  }
+  if(dio.attack == 0){
+    dio.draw();
+  }
+  for(let i = 0 ; i < knifevec.length; i++){
+    if (perso.posy > knifevec[i].posY + knifevec[i].Ly || perso.posx + 30 < knifevec[i].posX || perso.posy + 58 < knifevec[i].posY || perso.posx > knifevec[i].posX + knifevec[i].Lx){
+      knifevec[i].draw();
+      knifevec[i].posX -= 50;
+      if(knifevec[i].posX-200 < 0){
+        knifevec.splice(i,1);
+      }
+    }
+    else{
+      perso.pv -= 1;
+      if (healthbar.anim_id != 9) {
+        healthbar.anim_id += 1;
+      }
+      knifevec.splice(i,1);
+    }
+  }
   feu.draw();
   perso.draw();
-  knifeattack();
-  dio.draw();
   ZaWarudoTokiOTomare();
   healthbar.drawSlice();
   energy.drawSlice();

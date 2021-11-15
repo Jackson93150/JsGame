@@ -7,6 +7,7 @@ export default class Dio {
     this.RepetX = RepetX;
     this.RepetY = RepetY;
     this.all_img = [];
+    this.all_img = [];
     this.img = new Image();
     this.anim_id = -1;
     this.cnv = document.getElementById("myCanvas");
