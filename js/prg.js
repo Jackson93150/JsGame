@@ -12,6 +12,18 @@ feu.img.onload = function () {
   feu.load();
 };
 
+let win = new Sprite(1920, 1080, 0, 0, 1, 1);
+win.img.src = "./assets/win.png";
+win.img.onload = function () {
+  win.load();
+};
+
+let loose = new Sprite(1920, 1080, 0, 0, 1, 1);
+loose.img.src = "./assets/loose.png";
+loose.img.onload = function () {
+  loose.load();
+};
+
 let dio = new Dio(139.2,120,0,0,19,1);
 dio.img.src = "./assets/dio.png";
 dio.img.onload = function () {
@@ -63,6 +75,8 @@ roadroller.img.onload = function () {
 let knifevec = [];
 
 let keysPressed = {};
+let sniper = new Image();
+sniper.src = "./assets/sniper.png";
 let background = new Image();
 background.src = "./assets/background.png";
 let background2 = new Image();
@@ -98,18 +112,11 @@ let newarme = false;
 robotvec.push(robot);
 robotvec.push(robot2);
 let start = false;
-let portal = new Sprite(640, 640, background.width * 1.4, cnv.height / 2, 8, 1);
-portal.img.src = "./assets/portal.png";
-portal.img.onload = function () {
-  portal.load();
-};
 let starto = new Sprite(1920, 1080, 0, 0, 1, 1);
 starto.img.src = "./assets/start.png";
 starto.img.onload = function () {
   starto.load();
 };
-portal.slow = 6;
-portal.sslow = 6;
 let explosionvec = [];
 let healthbar = new Sprite(604, 80, 0, 0, 1, 10);
 healthbar.img.src = "./assets/healthbar.png";
@@ -135,11 +142,14 @@ konodio.img.onload = function () {
   konodio.load();
 };
 
-let teleportation = new Sprite(64, 64, perso.posx, perso.posy, 4, 8);
+let teleportation = new Sprite(320, 180, perso.posx, perso.posy, 1, 33);
 teleportation.img.src = "./assets/teleportation.png";
 teleportation.img.onload = function () {
   teleportation.load();
 };
+
+teleportation.slow = 3;
+teleportation.sslow = 3;
 
 let teleportation2 = new Sprite(960, 540, 0, 0, 1, 54);
 teleportation2.img.src = "./assets/teleportation2.png";
@@ -170,6 +180,10 @@ let dioexplosion = false;
 
 function explosiondio(d){
   if(dioexplosion == true){
+    if(dioexpl.anim_id == 0){
+      var myAudio = new Audio("./assets/diohit.mp3");
+      myAudio.play();
+    }
     dioexpl.posX = d.posX-50;
     dioexpl.posY = d.posY-50;
     if(d == dioknife){
@@ -223,12 +237,16 @@ function beamcol() {
         if (robotvec[i].state == true) {
           if (beamvec[i].state == false) {
             perso.pv -= 1;
-            if (healthbar.anim_id != 9) {
-              healthbar.anim_id += 1;
-            }
             if (energy.anim_id != 5) {
               energy.anim_id += 1;
             }
+            if (healthbar.anim_id != 9) {
+              healthbar.anim_id += 1;
+            }
+            else{
+              state = 5;
+            }
+            
             beamvec[i].state = true;
           }
         }
@@ -254,23 +272,6 @@ function robotattack() {
 function changestate() {
   for (let i = 0; i < robotvec.length; i++) {
     robotvec[i].state = true;
-  }
-}
-
-function portalhit() {
-  if (
-    perso.posy > portal.posY + portal.Ly ||
-    perso.posx + 30 < portal.posX ||
-    perso.posy + 58 < portal.posY ||
-    perso.posx > portal.posX + portal.Lx
-  ) {
-  } else {
-    perso.stop();
-    if (portal.state == false) {
-      portal.state = true;
-      teleportation.posX = perso.posx - 20;
-      teleportation.posY = perso.posy;
-    }
   }
 }
 
@@ -325,6 +326,9 @@ function backgstop() {
   let z = cnv.width - background.width * 1.4;
   if (bgx == z) {
     bgs = 0;
+    teleportation.posX = perso.posx-140;
+    teleportation.posY = perso.posy-75;
+    teleportation.state = true;
   }
 }
 
@@ -356,7 +360,7 @@ function attackchange(){
     dio.attack = 3;
   }
   if(dio.hp < 10){
-    dio.attack = 4;
+    state = 4;
   }
 }
 
@@ -569,12 +573,21 @@ document.addEventListener("keyup", (event) => {
       tir2.state = true;
     }
   }
+  if(keysPressed["Enter"]){
+    if(state == 4 || state == 5){
+      window.location.reload();
+    } 
+  }
   delete keysPressed[event.key];
 });
 
 
 function starttir2(){
   if(tir2.state == true){
+    if(tir2.anim_id == 0){
+      var myAudio = new Audio("./assets/laser.mp3");
+      myAudio.play();
+    }
     tir2.posX = perso.posx;
     tir2.posY = perso.posy-150;
     tir2.draw();
@@ -587,13 +600,6 @@ function starttir2(){
 
 
 function level0(){
-  ctx.drawImage(
-    background,
-    bgx,
-    0,
-    background.width * 1.4,
-    background.height * 1.4
-  );
   starto.hRatio = cnv.width / starto.Lx;
   starto.vRatio = cnv.height / starto.Ly;
   starto.centerShift_x = (cnv.width - starto.Lx * starto.hRatio) / 2;
@@ -611,18 +617,14 @@ function level1() {
     background.width * 1.4,
     background.height * 1.4
   );
-  if (portal.hp == 5) {
-    portal.posX = background.width * 1.4 - 400;
-    portal.hp = 4;
-  }
-  portal.draw();
-  portal.posX -= bgs;
   bgx -= bgs;
   perso.limite(cnv.height);
   perso.limite2(0);
   perso.limite3(0);
   perso.limite4(cnv.width);
-  perso.setup_gravity();
+  if(teleportation.state == false){
+    perso.setup_gravity();
+  }
   feu.posX = perso.posx - 4;
   feu.posY = perso.posy + 40;
 
@@ -681,11 +683,14 @@ function level1() {
       }
     } else {
       perso.pv -= 1;
+      if (zawarudo.state == false) {
+        alitirvec.splice(i, 1);
+      }
       if (healthbar.anim_id != 9) {
         healthbar.anim_id += 1;
       }
-      if (zawarudo.state == false) {
-        alitirvec.splice(i, 1);
+      else{
+        state = 5;
       }
     }
   }
@@ -697,13 +702,8 @@ function level1() {
       explosionvec[i].draw();
     }
   }
-
-  portalhit();
-  if (teleportation.anim_id < 19) {
-    feu.draw();
-    perso.draw();
-  }
-
+  feu.draw();
+  perso.draw();
   for (let i = 0; i < tirvec.length; i++) {
     tirvec[i].draw(cnv.width);
     tirvec[i].move();
@@ -712,7 +712,7 @@ function level1() {
     }
   }
 
-  if (portal.state == true) {
+  if (bgs == 0) {
     teleportation.draw();
   }
   ZaWarudoTokiOTomare();
@@ -721,15 +721,14 @@ function level1() {
   if (bgs == 0) {
     clearInterval(alinter);
   }
-  if (teleportation.anim_id == 31) {
+  if (teleportation.anim_id == 32) {
     state = 2;
-    teleportation.anim_id = 1;
+    teleportation.anim_id = 0;
     perso.posx = 200;
     perso.posy = 200;
     bgs = 1;
-    teleportation.posX = perso.posx - 20;
-    teleportation.posY = perso.posy;
-    perso.restart();
+    teleportation.posX = perso.posx-140;
+    teleportation.posY = perso.posy-75;
     if (healthbar.anim_id - 5 > 0) {
       healthbar.anim_id -= 5;
     } else {
@@ -760,7 +759,9 @@ function level2() {
   perso.limite2(0);
   perso.limite3(0);
   perso.limite4(cnv.width);
-  perso.setup_gravity();
+  if(teleportation.state == false){
+    perso.setup_gravity();
+  }
   feu.posX = perso.posx - 4;
   feu.posY = perso.posy + 40;
   for (let i = 0; i < tirvec.length; i++) {
@@ -771,15 +772,13 @@ function level2() {
     }
   }
   stoplv2();
-  if (teleportation.anim_id > 19 || teleportation.anim_id > 0) {
-    feu.draw();
-    perso.draw();
-  }
-  if (portal.state == true) {
+  feu.draw();
+  perso.draw();
+  if (teleportation.anim_id != 32) {
     teleportation.draw();
   }
-  if (teleportation.anim_id == 31) {
-    portal.state = false;
+  else{
+    teleportation.state = false;
   }
   robotdm();
   beamvec[0].posY = robotvec[0].posY + 20;
@@ -887,6 +886,9 @@ function level3(){
         if (healthbar.anim_id != 9) {
           healthbar.anim_id += 1;
         }
+        else{
+          state = 5;
+        }
       }
       if(roadroller.posY > cnv.height){
         dio.state = true;
@@ -913,6 +915,11 @@ function level3(){
         }
       }
     }
+    ctx.drawImage(
+      sniper,
+      cnv.width-100,
+      perso.posy,
+    );
   }
   if(dio.attack == 2){
     if(summon.anim_id == 0){
@@ -940,6 +947,9 @@ function level3(){
             if (healthbar.anim_id != 9) {
               healthbar.anim_id += 1;
             }
+            else{
+              state = 5;
+            }
           }
         }
         muda.hp -=1;
@@ -958,6 +968,11 @@ function level3(){
     dio.draw();
     tircoldio(dio);
     explosiondio(dio);
+    ctx.drawImage(
+      sniper,
+      cnv.width-100,
+      perso.posy,
+    );
   }
   if(dio.attack == 1){
     if(dioknife.anim_id == 0){
@@ -984,6 +999,11 @@ function level3(){
     }
     tircoldio(dioknife);
     explosiondio(dioknife);
+    ctx.drawImage(
+      sniper,
+      cnv.width-100,
+      perso.posy,
+    );
   }
   if(dio.attack == 0){
     dio.draw();
@@ -1002,6 +1022,9 @@ function level3(){
       perso.pv -= 2;
       if (healthbar.anim_id != 9) {
         healthbar.anim_id += 1;
+      }
+      else{
+        state = 5;
       }
       knifevec.splice(i,1);
     }
@@ -1030,6 +1053,20 @@ function update() {
   }
   if (state == 3) {
     level3();
+  }
+  if(state == 4){
+    win.hRatio = cnv.width / win.Lx;
+    win.vRatio = cnv.height / win.Ly;
+    win.centerShift_x = (cnv.width - win.Lx * win.hRatio) / 2;
+    win.centerShift_y = (cnv.height - win.Ly * win.vRatio) / 2;
+    win.drawScale();
+  }
+  if(state == 5){
+    loose.hRatio = cnv.width / loose.Lx;
+    loose.vRatio = cnv.height / loose.Ly;
+    loose.centerShift_x = (cnv.width - loose.Lx * loose.hRatio) / 2;
+    loose.centerShift_y = (cnv.height - loose.Ly * loose.vRatio) / 2;
+    loose.drawScale();
   }
   setTimeout(() => {
     requestAnimationFrame(update);
