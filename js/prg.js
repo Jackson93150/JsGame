@@ -36,6 +36,18 @@ muda.img.onload = function () {
   muda.load();
 };
 
+let tir2 = new Sprite(490, 360, 0, 0, 1, 17);
+tir2.img.src = "./assets/tir2.png";
+tir2.img.onload = function () {
+  tir2.load();
+};
+
+let dioexpl = new Sprite(221, 180, 0, 0, 1, 21);
+dioexpl.img.src = "./assets/dioexpl.png";
+dioexpl.img.onload = function () {
+  dioexpl.load();
+};
+
 let roadrollersummon = new Sprite(960, 540, 0, 0, 1, 54);
 roadrollersummon.img.src = "./assets/roadrollersummon.png";
 roadrollersummon.img.onload = function () {
@@ -154,6 +166,23 @@ beam2.slow = 2;
 beam2.sslow = 2;
 beamvec.push(beam);
 beamvec.push(beam2);
+let dioexplosion = false;
+
+function explosiondio(d){
+  if(dioexplosion == true){
+    dioexpl.posX = d.posX-50;
+    dioexpl.posY = d.posY-50;
+    if(d == dioknife){
+      dioexpl.posX = d.posX;
+      dioexpl.posY = d.posY;
+    }
+    dioexpl.draw();
+    if(dioexpl.anim_id == 20){
+      dioexplosion = false;
+      dioexpl.anim_id = 0;
+    }
+  }
+}
 
 function bgmove(){
   bgx2 -= bgs;
@@ -300,10 +329,30 @@ function backgstop() {
 }
 
 function attackchange(){
-  if(dio.hp < 35){
+  if(dio.hp <= 40){
+    if(dio.hp == 40){
+      if(healthbar.state == false){
+        if (healthbar.anim_id - 4 > 0) {
+          healthbar.anim_id -= 4;
+        } else {
+          healthbar.anim_id = 0;
+        }
+        healthbar.state = true;
+      }
+    }
     dio.attack = 2;
   }
-  if(dio.hp < 20){
+  if(dio.hp <= 20){
+    if(dio.hp == 20){
+      if(healthbar.state == true){
+        if (healthbar.anim_id - 4 > 0) {
+          healthbar.anim_id -= 4;
+        } else {
+          healthbar.anim_id = 0;
+        }
+        healthbar.state = false;
+      }
+    }
     dio.attack = 3;
   }
   if(dio.hp < 10){
@@ -341,20 +390,14 @@ function changeattack(){
 }
 
 function tircoldio(d){
-  for (let i = 0; i < tirvec.length; i++) {
-    if (
-      tirvec[i].y > d.posY + d.Ly ||
-      tirvec[i].x + 23 < d.posX ||
-      tirvec[i].y + 6 < d.posY ||
-      tirvec[i].x > d.posX + d.Lx
-    ){
-
-    }
-    else{
-      dio.hp -= 0.25;
-      tirvec.splice(i, 1);
-      if (energy.anim_id != 5) {
-        energy.anim_id += 1;
+  if(tir2.state == true){
+    if(tir2.anim_id == 15){
+      if (tir2.posY+100 < d.posY + d.Ly && tir2.posY + tir2.Ly-100 > d.posY){
+        dio.hp -= 1;
+        dioexplosion = true;
+        if (energy.anim_id != 5) {
+          energy.anim_id += 1;
+        }
       }
     }
   }
@@ -372,19 +415,19 @@ function tircol(i) {
       alienvec[i].state = true;
       tirvec.splice(j, 1);
       let explosion = new Sprite(
-        68,
-        72,
+        64,
+        45,
         alienvec[i].posX,
         alienvec[i].posY,
-        8,
-        1
+        1,
+        30
       );
       explosion.img.src = "./assets/explosion.png";
       explosion.img.onload = function () {
         explosion.load();
       };
-      explosion.slow = 5;
-      explosion.sslow = 5;
+      explosion.slow = 8;
+      explosion.sslow = 8;
       explosionvec.push(explosion);
       var myAudio = new Audio("./assets/explosion.mp3");
       myAudio.volume = 0.1;
@@ -396,7 +439,7 @@ function tircol(i) {
   }
 }
 
-document.addEventListener("keydown", (event) => {
+document.addEventListener("keypress", (event) => {
   keysPressed[event.key] = true;
   if (
     (keysPressed["z"] && event.key == "d" && event.key == "j") ||
@@ -460,7 +503,12 @@ document.addEventListener("keydown", (event) => {
     perso.fly_left();
   }
   if (keysPressed["j"]) {
-    tirstart();
+    if(perso.bossstage == false){
+      tirstart();
+    }
+    if(perso.bossstage == true){
+      tir2.state = true;
+    }
   }
   if (keysPressed["e"]) {
     if(state == 3){
@@ -470,6 +518,7 @@ document.addEventListener("keydown", (event) => {
         perso.img.src = "./assets/perso2.png";
         newarme = true;
         dio.posY = cnv.height;
+        perso.bossstage = true;
       }
     }
   }
@@ -503,8 +552,39 @@ document.addEventListener("keydown", (event) => {
 });
 
 document.addEventListener("keyup", (event) => {
+  if (keysPressed["z"]) {
+    perso.restartup();
+  }
+  if (keysPressed["s"]) {
+    perso.restartdown();
+  }
+  if (keysPressed["q"]) {
+    perso.restartleft();
+  }
+  if (keysPressed["d"]) {
+    perso.restartright();
+  }
+  if (keysPressed["j"]) {
+    if(perso.bossstage == true){
+      tir2.state = true;
+    }
+  }
   delete keysPressed[event.key];
 });
+
+
+function starttir2(){
+  if(tir2.state == true){
+    tir2.posX = perso.posx;
+    tir2.posY = perso.posy-150;
+    tir2.draw();
+    if(tir2.anim_id == 16){
+      tir2.state = false;
+      tir2.anim_id = 0;
+    }
+  }
+}
+
 
 function level0(){
   ctx.drawImage(
@@ -768,7 +848,7 @@ function level3(){
   perso.limite2(0);
   perso.limite3(0);
   perso.limite4(cnv.width);
-  if(konodio.hp == 5 && muda.state == false){
+  if(konodio.hp == 5 && muda.state == false && tir2.state == false){
     perso.setup_gravity();
   }
   feu.posX = perso.posx - 4;
@@ -809,12 +889,19 @@ function level3(){
         }
       }
       if(roadroller.posY > cnv.height){
+        dio.state = true;
         dio.posY = cnv.height/2;
         dio.draw();
         tircoldio(dio);
+        explosiondio(dio);
         if(dio.anim_id == 18){
-          roadrollersummon.anim_id = 0;
+          roadroller.hp -=1;
+        }
+        if(roadroller.hp == 0){
+          dio.state = false;
           dio.anim_id = 0;
+          roadrollersummon.anim_id = 0;
+          roadroller.hp = 5;
         }
         if(zawarudo.state == true){
           if(dio.anim_id > 0){
@@ -840,11 +927,21 @@ function level3(){
       summon.drawScale();
       muda.posY = perso.posy;
       muda.posX = perso.posx;
+      if(summon.anim_id == 52){
+        muda.state = true;
+      }
     }
     if(summon.anim_id == 53){
-      muda.state = true;
       muda.draw();
       if(muda.anim_id == 19){
+        if(muda.hp == 5){
+          if(muda.state == true){
+            perso.pv -= 1;
+            if (healthbar.anim_id != 9) {
+              healthbar.anim_id += 1;
+            }
+          }
+        }
         muda.hp -=1;
       }
       if(muda.hp == 0){
@@ -860,6 +957,7 @@ function level3(){
     dio.posY = cnv.height/2;
     dio.draw();
     tircoldio(dio);
+    explosiondio(dio);
   }
   if(dio.attack == 1){
     if(dioknife.anim_id == 0){
@@ -885,10 +983,10 @@ function level3(){
       }
     }
     tircoldio(dioknife);
+    explosiondio(dioknife);
   }
   if(dio.attack == 0){
     dio.draw();
-    tircoldio(dio);
   }
   for(let i = 0 ; i < knifevec.length; i++){
     if (perso.posy > knifevec[i].posY + knifevec[i].Ly || perso.posx + 30 < knifevec[i].posX || perso.posy + 58 < knifevec[i].posY || perso.posx > knifevec[i].posX + knifevec[i].Lx){
@@ -910,6 +1008,7 @@ function level3(){
   }
   feu.draw();
   perso.draw();
+  starttir2();
   ZaWarudoTokiOTomare();
   healthbar.drawSlice();
   energy.drawSlice();

@@ -10,11 +10,13 @@ export default class Perso {
         this.acceleration2 = 0;
         this.speedx = 0;
         this.speedy = 0;
-        this.turbo_power = -0.25;
+        this.turbo_power = -1;
         this.turbo_stop = 0.15;
-        this.movement_left = -0.07;
-        this.movement_right = 0.07;
+        this.movement_left = -0.3;
+        this.movement_right = 0.3;
         this.pv = 10;
+        this.upstate = true;
+        this.bossstage = false;
     }
     draw(){
         this.ctx.drawImage(
@@ -25,7 +27,7 @@ export default class Perso {
     }
     setup_gravity(){
         this.speedx += this.acceleration;
-        this.speedy += this.acceleration2+0.07;
+        this.speedy += this.acceleration2+0.2;
         this.posx += this.speedx;
         this.posy += this.speedy;
         this.acceleration *= 0.0;
@@ -46,7 +48,7 @@ export default class Perso {
     limite(perimetre) {
         // limite pour le bas de l'écran
         while (this.posy + 60.0 > perimetre) {
-            this.posy = perimetre - 65.0;
+            this.posy = perimetre - 60.0;
             this.speedy = 0.0;
             break;
         }
@@ -82,7 +84,7 @@ export default class Perso {
         this.speedy = 0;
         this.turbo_power = 0;
         this.turbo_stop = 0;
-        this.movement_left = 0.;
+        this.movement_left = 0;
         this.movement_right = 0;
     }
     restart(){
@@ -90,10 +92,26 @@ export default class Perso {
         this.acceleration2 = 0;
         this.speedx = 0;
         this.speedy = 0;
-        this.turbo_power = -0.25;
+        this.turbo_power = -1;
         this.turbo_stop = 0.15;
-        this.movement_left = -0.07;
-        this.movement_right = 0.07;
+        this.movement_left = -0.3;
+        this.movement_right = 0.3;
+    }
+    restartup(){
+        this.acceleration2 = 0;
+        this.turbo_power = -1;
+    }
+    restartdown(){
+        this.acceleration2 = 0;
+        this.turbo_stop = 0.15;
+    }
+    restartleft(){
+        this.acceleration = 0;
+        this.movement_left = -0.3;
+    }
+    restartright(){
+        this.acceleration = 0;
+        this.movement_right = 0.3;
     }
 }
 
