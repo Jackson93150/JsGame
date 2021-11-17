@@ -12,6 +12,34 @@ feu.img.onload = function () {
   feu.load();
 };
 
+let fond = new Sprite(640,360, 0, 0, 1, 59);
+fond.img.src = "./assets/fond.png";
+fond.img.onload = function () {
+  fond.load();
+};
+
+let fond2 = new Sprite(810, 337.5, 0, 0, 1, 60);
+fond2.img.src = "./assets/fond2.png";
+fond2.img.onload = function () {
+  fond2.load();
+};
+fond2.slow = 2;
+fond2.sslow = 2;
+
+let fond3 = new Sprite(640,360, 0, 0, 1, 58);
+fond3.img.src = "./assets/fond3.png";
+fond3.img.onload = function () {
+  fond3.load();
+};
+fond3.slow = 2;
+fond3.sslow = 2;
+
+let fond4 = new Sprite(680,510, 0, 0, 1, 51);
+fond4.img.src = "./assets/fond4.png";
+fond4.img.onload = function () {
+  fond4.load();
+};
+
 let win = new Sprite(1920, 1080, 0, 0, 1, 1);
 win.img.src = "./assets/win.png";
 win.img.onload = function () {
@@ -77,15 +105,6 @@ let knifevec = [];
 let keysPressed = {};
 let sniper = new Image();
 sniper.src = "./assets/sniper.png";
-let background = new Image();
-background.src = "./assets/background.png";
-let background2 = new Image();
-background2.src = "./assets/background2.png";
-let background3 = new Sprite(640, 781, 0, 0, 1, 1);
-background3.img.src = "./assets/background3.png";
-background3.img.onload = function () {
-  background3.load();
-};
 let arme = new Image();
 arme.src = "./assets/arme.png";
 let robot = new Sprite(113, 213, 0, 0, 1, 1);
@@ -98,8 +117,6 @@ robot2.img.src = "./assets/robot.png";
 robot2.img.onload = function () {
   robot2.load();
 };
-let bgx = 0;
-let bgx2 = 0;
 let bgx3 = 0;
 let bgs = 1;
 let state = 0;
@@ -199,7 +216,9 @@ function explosiondio(d){
 }
 
 function bgmove(){
-  bgx2 -= bgs;
+  for(let i = 0; i < robotvec.length;i++){
+    robotvec[i].hp = 3;
+  };
 }
 
 function robotdm() {
@@ -323,13 +342,10 @@ function moveAlien(i) {
 }
 
 function backgstop() {
-  let z = cnv.width - background.width * 1.4;
-  if (bgx == z) {
-    bgs = 0;
-    teleportation.posX = perso.posx-140;
-    teleportation.posY = perso.posy-75;
-    teleportation.state = true;
-  }
+  bgs = 0;
+  teleportation.posX = perso.posx-140;
+  teleportation.posY = perso.posy-75;
+  teleportation.state = true;
 }
 
 function attackchange(){
@@ -531,6 +547,7 @@ document.addEventListener("keypress", (event) => {
       playback();
       start = true;
       state = 1;
+      setTimeout(backgstop,20000);
     }
   }
   if (keysPressed["i"]) {
@@ -600,6 +617,11 @@ function starttir2(){
 
 
 function level0(){
+  fond4.hRatio = cnv.width / fond4.Lx;
+  fond4.vRatio = cnv.height / fond4.Ly;
+  fond4.centerShift_x = (cnv.width - fond4.Lx * fond4.hRatio) / 2;
+  fond4.centerShift_y = (cnv.height - fond4.Ly * fond4.vRatio) / 2;
+  fond4.drawScale();
   starto.hRatio = cnv.width / starto.Lx;
   starto.vRatio = cnv.height / starto.Ly;
   starto.centerShift_x = (cnv.width - starto.Lx * starto.hRatio) / 2;
@@ -608,16 +630,17 @@ function level0(){
 }
 
 function level1() {
-  backgstop();
   scaleZa();
-  ctx.drawImage(
-    background,
-    bgx,
-    0,
-    background.width * 1.4,
-    background.height * 1.4
-  );
-  bgx -= bgs;
+  fond2.hRatio = cnv.width / fond2.Lx;
+  fond2.vRatio = cnv.height / fond2.Ly;
+  fond2.centerShift_x = (cnv.width - fond2.Lx * fond2.hRatio) / 2;
+  fond2.centerShift_y = (cnv.height - fond2.Ly * fond2.vRatio) / 2;
+  if(bgs!=0){
+    fond2.drawScale();
+  }
+  else{
+    fond2.drawpercent();
+  }
   perso.limite(cnv.height);
   perso.limite2(0);
   perso.limite3(0);
@@ -743,18 +766,22 @@ function level1() {
 }
 
 function level2() {
+  scaleZa();
   robotvec[0].posX = cnv.width - 113;
   beamvec[0].posX = cnv.width - beam.Lx + 80;
   beamvec[1].posX = cnv.width - beam.Lx + 80;
   robotvec[1].posX = cnv.width - 113;
-  if (bgx2 == cnv.width - background2.width) {
-    bgs = 0;
-    for(let i = 0; i < robotvec.length;i++){
-      robotvec[i].hp = 3;
-    }
+  setTimeout(bgmove,20000);
+  fond3.hRatio = cnv.width / fond3.Lx;
+  fond3.vRatio = cnv.height / fond3.Ly;
+  fond3.centerShift_x = (cnv.width - fond3.Lx * fond3.hRatio) / 2;
+  fond3.centerShift_y = (cnv.height - fond3.Ly * fond3.vRatio) / 2;
+  if(robotvec[0].hp != 3){
+    fond3.drawScale();
   }
-  bgmove();
-  ctx.drawImage(background2, bgx2, 0, background2.width, background2.height);
+  else{
+    fond3.drawpercent();
+  }
   perso.limite(cnv.height);
   perso.limite2(0);
   perso.limite3(0);
@@ -794,14 +821,15 @@ function level2() {
 
 function level3(){
   scaleZa();
-  background3.hRatio = cnv.width / background3.Lx;
-  background3.vRatio = (cnv.height / background3.Ly)*background3.hRatio;
-  background3.centerShift_x = (cnv.width - background3.Lx * background3.hRatio) / 2;
-  background3.drawScale();
+  fond.hRatio = cnv.width / fond.Lx;
+  fond.vRatio = cnv.height / fond.Ly;
+  fond.centerShift_x = (cnv.width - fond.Lx * fond.hRatio) / 2;
+  fond.centerShift_y = (cnv.height - fond.Ly * fond.vRatio) / 2;
+  fond.drawScale();
   dio.posX = cnv.width-140;
   dioknife.posX = cnv.width-200;
   if(teleportation2.state == false){
-    teleportation2.drawback();
+    teleportation2.draw();
   }
   if(teleportation2.anim_id == 1){
     teleportation2.state = true;
@@ -815,7 +843,6 @@ function level3(){
   }
   if(newarme == true){
     if(bgx3 < 300){
-      background3.posY+=1;
       bgx3+=1;
       dio.posY-=1;
       konodio.centerShift_x = cnv.width;
@@ -1055,6 +1082,11 @@ function update() {
     level3();
   }
   if(state == 4){
+    fond4.hRatio = cnv.width / fond4.Lx;
+    fond4.vRatio = cnv.height / fond4.Ly;
+    fond4.centerShift_x = (cnv.width - fond4.Lx * fond4.hRatio) / 2;
+    fond4.centerShift_y = (cnv.height - fond4.Ly * fond4.vRatio) / 2;
+    fond4.drawScale();
     win.hRatio = cnv.width / win.Lx;
     win.vRatio = cnv.height / win.Ly;
     win.centerShift_x = (cnv.width - win.Lx * win.hRatio) / 2;
@@ -1062,6 +1094,11 @@ function update() {
     win.drawScale();
   }
   if(state == 5){
+    fond4.hRatio = cnv.width / fond4.Lx;
+    fond4.vRatio = cnv.height / fond4.Ly;
+    fond4.centerShift_x = (cnv.width - fond4.Lx * fond4.hRatio) / 2;
+    fond4.centerShift_y = (cnv.height - fond4.Ly * fond4.vRatio) / 2;
+    fond4.drawScale();
     loose.hRatio = cnv.width / loose.Lx;
     loose.vRatio = cnv.height / loose.Ly;
     loose.centerShift_x = (cnv.width - loose.Lx * loose.hRatio) / 2;

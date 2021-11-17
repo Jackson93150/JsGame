@@ -71,23 +71,19 @@ export default class Sprite {
       }
     }
   }
-  drawback() {
+  drawpercent() {
     if (this.anim_id >= 0) {
       this.ctx.drawImage(
         this.all_img[this.anim_id],
         this.posX,
         this.posY,
         this.Lx,
-        this.Ly
+        this.Ly,
+        this.centerShift_x,
+        this.centerShift_y,
+        this.Lx * this.hRatio,
+        this.Ly * this.vRatio
       );
-      if (this.slow == 1) {
-        this.anim_id -= 1;
-        this.slow = this.sslow;
-      }
-      this.slow -= 1;
-      if (this.anim_id == 0) {
-        this.anim_id = this.all_img.length;
-      }
     }
   }
   drawScale() {
