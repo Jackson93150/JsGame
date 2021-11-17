@@ -18,16 +18,16 @@ fond.img.onload = function () {
   fond.load();
 };
 
-let fond2 = new Sprite(810, 337.5, 0, 0, 1, 60);
-fond2.img.src = "./assets/fond2.png";
+let fond2 = new Sprite(640,360, 0, 0, 1, 58);
+fond2.img.src = "./assets/fond3.png";
 fond2.img.onload = function () {
   fond2.load();
 };
 fond2.slow = 2;
 fond2.sslow = 2;
 
-let fond3 = new Sprite(640,360, 0, 0, 1, 58);
-fond3.img.src = "./assets/fond3.png";
+let fond3 = new Sprite(810, 337.5, 0, 0, 1, 60);
+fond3.img.src = "./assets/fond2.png";
 fond3.img.onload = function () {
   fond3.load();
 };
