@@ -12,7 +12,13 @@ feu.img.onload = function () {
   feu.load();
 };
 
-let fond = new Sprite(640,360, 0, 0, 1, 59);
+let diotp = new Sprite(640,360, 0, 0, 1, 64);
+diotp.img.src = "./assets/diotp.png";
+diotp.img.onload = function () {
+  diotp.load();
+};
+
+let fond = new Sprite(872,720, 0, 0, 1, 34);
 fond.img.src = "./assets/fond.png";
 fond.img.onload = function () {
   fond.load();
@@ -842,11 +848,18 @@ function level3(){
     );
   }
   if(newarme == true){
-    if(bgx3 < 300){
-      bgx3+=1;
-      dio.posY-=1;
-      konodio.centerShift_x = cnv.width;
+    if(diotp.anim_id != 63){
+      diotp.hRatio = cnv.width / diotp.Lx;
+      diotp.vRatio = cnv.height / diotp.Ly;
+      diotp.centerShift_x = (cnv.width - diotp.Lx * diotp.hRatio) / 2;
+      diotp.centerShift_y = (cnv.height - diotp.Ly * diotp.vRatio) / 2;
+      diotp.drawScale();
     }
+  }
+  if(diotp.anim_id == 63){
+    dio.posX = cnv.width/2-100;
+    dio.posY = cnv.height/2-100;
+    bgx3 = 300;
   }
   if(bgx3 == 300){
     if(konodio.state == false){
@@ -866,7 +879,7 @@ function level3(){
     if(konodio.anim_id == 48){
       konodio.state = true;
       konodio.hp = 5;
-      setTimeout(changeattack, 3000);
+      setTimeout(changeattack, 2000);
       konodio.anim_id = 0;
     }
   }
@@ -919,6 +932,7 @@ function level3(){
       }
       if(roadroller.posY > cnv.height){
         dio.state = true;
+        dio.posX = cnv.width-140;
         dio.posY = cnv.height/2;
         dio.draw();
         tircoldio(dio);
@@ -991,6 +1005,7 @@ function level3(){
     if(zawarudo.state == true){
       muda.state = false;
     }
+    dio.posX = cnv.width-140;
     dio.posY = cnv.height/2;
     dio.draw();
     tircoldio(dio);
@@ -1002,6 +1017,7 @@ function level3(){
     );
   }
   if(dio.attack == 1){
+    dio.posX = cnv.width-140;
     if(dioknife.anim_id == 0){
       if(zawarudo.state == false){
         dioknife.posY = perso.posy;
