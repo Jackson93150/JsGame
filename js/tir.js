@@ -1,4 +1,4 @@
-export default class Tir {
+export default class Tir { // Class pour le tir du joueur 
     constructor(x,y){
         this.x = x;
         this.y = y;                                                                                            

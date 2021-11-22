@@ -2,6 +2,7 @@ import Perso from "./perso.js";
 import Sprite from "./sprite.js";
 import Tir from "./tir.js";
 import Dio from "./dio.js";
+// definition des variables et sprite que l'on va utiliser
 let cnv = document.getElementById("myCanvas");
 let ctx = cnv.getContext("2d");
 const fps = 60;
@@ -201,7 +202,7 @@ beamvec.push(beam);
 beamvec.push(beam2);
 let dioexplosion = false;
 
-function explosiondio(d){
+function explosiondio(d){ // fonction qui va draw lexplosion sur le boss de fin quand celui ci est toucher par un tir du joueur
   if(dioexplosion == true){
     if(dioexpl.anim_id == 0){
       var myAudio = new Audio("./assets/diohit.mp3");
@@ -221,13 +222,13 @@ function explosiondio(d){
   }
 }
 
-function bgmove(){
+function bgmove(){  // fonction qui va set les hp robot a 3
   for(let i = 0; i < robotvec.length;i++){
     robotvec[i].hp = 3;
   };
 }
 
-function robotdm() {
+function robotdm() { // fonction qui fait déplacer les robot sur la ligne vertical 
   for (let i = 0; i < robotvec.length; i++) {
     if (robotvec[i].state == false) {
       if (robotvec[i].hp == 5) {
@@ -248,7 +249,7 @@ function robotdm() {
   }
 }
 
-function beamcol() {
+function beamcol() { // verification de la colision entre le perso et le rayon laser des robot
   for (let i = 0; i < beamvec.length; i++) {
     if (
       perso.posy > beamvec[i].posY + beamvec[i].Ly ||
@@ -280,7 +281,7 @@ function beamcol() {
   }
 }
 
-function robotattack() {
+function robotattack() { // fonction qui va permettre au robot de tirer le rayon laser
   for (let i = 0; i < robotvec.length; i++) {
     if(robotvec[i].hp != 3){
       if (robotvec[i].state == true) {
@@ -294,25 +295,25 @@ function robotattack() {
   }
 }
 
-function changestate() {
+function changestate() { // change l'état des robot de false a true
   for (let i = 0; i < robotvec.length; i++) {
     robotvec[i].state = true;
   }
 }
 
-function playback() {
+function playback() { // lance la musique de fond du jeu
   var myAudio = new Audio("./assets/fond.mp3");
   myAudio.play();
 }
 
-function scaleZa() {
+function scaleZa() { // fonction qui va scale le pouvoir du joueur par rapport a l'écran
   zawarudo.hRatio = cnv.width / zawarudo.Lx;
   zawarudo.vRatio = cnv.height / zawarudo.Ly;
   zawarudo.centerShift_x = (cnv.width - zawarudo.Lx * zawarudo.hRatio) / 2;
   zawarudo.centerShift_y = (cnv.height - zawarudo.Ly * zawarudo.vRatio) / 2;
 }
 
-function ZaWarudoTokiOTomare() {
+function ZaWarudoTokiOTomare() { // fonction qui va draw le pouvoir du joueur
   if (zawarudo.state == true) {
     zawarudo.drawScale();
     if (zawarudo.anim_id == 42) {
@@ -326,7 +327,7 @@ function getRandom(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-function spawnAlien() {
+function spawnAlien() { // fonction qui va spawn les alien du niveau 1
   let y = getRandom(0, cnv.height - 82);
   let y2 = getRandom(0, cnv.height / 2);
   let ali = new Sprite(82, 62, cnv.width, y, 20, 1);
@@ -347,14 +348,14 @@ function moveAlien(i) {
   alienvec[i].posX -= 5;
 }
 
-function backgstop() {
+function backgstop() {// fonction pour stopper le fond et lancer la teleportation pour le niveau 2
   bgs = 0;
   teleportation.posX = perso.posx-140;
   teleportation.posY = perso.posy-75;
   teleportation.state = true;
 }
 
-function attackchange(){
+function attackchange(){ // fonction qui va permettre de changer l'état du boss par rapport a ses hp
   if(dio.hp <= 40){
     if(dio.hp == 40){
       if(healthbar.state == false){
@@ -386,12 +387,12 @@ function attackchange(){
   }
 }
 
-function tirstart() {
+function tirstart() { // creation d'un tir
   let tir = new Tir(perso.posx + 40, perso.posy + 29);
   tirvec.push(tir);
 }
 
-function stoplv2(){
+function stoplv2(){ // fonction qui va stopper le niveau 2
   if(robotvec[0].hp == 3){
     perso.stop();
     teleportation2.posX = perso.posx-480;
@@ -411,11 +412,11 @@ function stoplv2(){
   }
 }
 
-function changeattack(){
+function changeattack(){ // initie le premier etat du boss
   dio.attack = 1;
 }
 
-function tircoldio(d){
+function tircoldio(d){ // verification de la collision des tir du perso avec le boss
   if(tir2.state == true){
     if(tir2.anim_id == 15){
       if (tir2.posY+100 < d.posY + d.Ly && tir2.posY + tir2.Ly-100 > d.posY){
@@ -429,7 +430,7 @@ function tircoldio(d){
   }
 }
 
-function tircol(i) {
+function tircol(i) { // verification de la colisition des tir du perso avec les alien
   for (let j = 0; j < tirvec.length; j++) {
     if (
       tirvec[j].y > alienvec[i].posY + alienvec[i].Ly ||
@@ -465,7 +466,7 @@ function tircol(i) {
   }
 }
 
-document.addEventListener("keypress", (event) => {
+document.addEventListener("keypress", (event) => { // gestion des touches du clavier et de leur action
   keysPressed[event.key] = true;
   if (
     (keysPressed["z"] && event.key == "d" && event.key == "j") ||
@@ -605,7 +606,7 @@ document.addEventListener("keyup", (event) => {
 });
 
 
-function starttir2(){
+function starttir2(){ // fonction qui va lancer le tir de la deuxieme arme
   if(tir2.state == true){
     if(tir2.anim_id == 0){
       var myAudio = new Audio("./assets/laser.mp3");
@@ -622,7 +623,7 @@ function starttir2(){
 }
 
 
-function level0(){
+function level0(){ // initialisation de l'ecran de chargement
   fond4.hRatio = cnv.width / fond4.Lx;
   fond4.vRatio = cnv.height / fond4.Ly;
   fond4.centerShift_x = (cnv.width - fond4.Lx * fond4.hRatio) / 2;
@@ -635,7 +636,7 @@ function level0(){
   starto.drawScale();
 }
 
-function level1() {
+function level1() { // initialisation du 1er niveau
   scaleZa();
   fond2.hRatio = cnv.width / fond2.Lx;
   fond2.vRatio = cnv.height / fond2.Ly;
@@ -662,11 +663,11 @@ function level1() {
   }
 
   for (let i = 0; i < alienvec.length; i++) {
-    if (zawarudo.state == true) {
+    if (zawarudo.state == true) { // on regarde si le pouvoir a été activé sur les alien 
       alienvec[i].posX += 5;
       alienvec[i].slow = 9;
       alienvec[i].sslow = 9;
-    }
+    } // on draw les alien et leur projectile
     alienvec[i].draw();
     moveAlien(i);
     if (alienvec[i].anim_id == 12) {
@@ -692,12 +693,12 @@ function level1() {
   }
 
   for (let i = 0; i < alitirvec.length; i++) {
-    if (zawarudo.state == true) {
+    if (zawarudo.state == true) { // verification si le pouvoir a été active sur les projectil alien 
       alitirvec[i].posX += 15;
       alitirvec[i].slow = 9;
       alitirvec[i].sslow = 9;
-    }
-    if (
+    }// collision entre les projectil alien et le perso
+    if ( 
       perso.posy > alitirvec[i].posY + alitirvec[i].Ly ||
       perso.posx + 30 < alitirvec[i].posX ||
       perso.posy + 58 < alitirvec[i].posY ||
@@ -750,7 +751,7 @@ function level1() {
   if (bgs == 0) {
     clearInterval(alinter);
   }
-  if (teleportation.anim_id == 32) {
+  if (teleportation.anim_id == 32) { // initialisation des valeur pour le niveau 2
     state = 2;
     teleportation.anim_id = 0;
     perso.posx = 200;
@@ -771,7 +772,7 @@ function level1() {
   }
 }
 
-function level2() {
+function level2() { // initialisation du 2 eme niveau
   scaleZa();
   robotvec[0].posX = cnv.width - 113;
   beamvec[0].posX = cnv.width - beam.Lx + 80;
@@ -825,7 +826,7 @@ function level2() {
   energy.drawSlice();
 }
 
-function level3(){
+function level3(){ // initialisation du 3 eme niveau
   scaleZa();
   fond.hRatio = cnv.width / fond.Lx;
   fond.vRatio = cnv.height / fond.Ly;
@@ -861,7 +862,7 @@ function level3(){
     dio.posY = cnv.height/2-100;
     bgx3 = 300;
   }
-  if(bgx3 == 300){
+  if(bgx3 == 300){ // entrée en scene du boss
     if(konodio.state == false){
       konodio.hp = 4;
       konodio.hRatio = cnv.width / konodio.Lx;
@@ -899,7 +900,7 @@ function level3(){
       tirvec.splice(i, 1);
     }
   }
-  if(dio.attack == 3){
+  if(dio.attack == 3){ // 3eme etat du boss
     muda.state = false;
     if(roadrollersummon.anim_id == 0){
       var myAudio = new Audio("./assets/roadrollerda.mp3");
@@ -962,7 +963,7 @@ function level3(){
       perso.posy,
     );
   }
-  if(dio.attack == 2){
+  if(dio.attack == 2){ // eme etat du boss
     if(summon.anim_id == 0){
       var myAudio = new Audio("./assets/summon.mp3");
       myAudio.play();
@@ -1016,7 +1017,7 @@ function level3(){
       perso.posy,
     );
   }
-  if(dio.attack == 1){
+  if(dio.attack == 1){// 1er etat du boss
     dio.posX = cnv.width-140;
     if(dioknife.anim_id == 0){
       if(zawarudo.state == false){

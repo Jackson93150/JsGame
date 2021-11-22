@@ -1,4 +1,4 @@
-export default class Perso {
+export default class Perso { // class de notre perso
     constructor(){
         this.cnv = document.getElementById("myCanvas");
         this.ctx = this.cnv.getContext("2d");
@@ -25,7 +25,7 @@ export default class Perso {
             this.posy,
         );
     }
-    setup_gravity(){
+    setup_gravity(){ // fonction qui va appliquer la gravité en fonction de la force
         this.speedx += this.acceleration;
         this.speedy += this.acceleration2+0.2;
         this.posx += this.speedx;
@@ -45,6 +45,7 @@ export default class Perso {
     fly_right() {
         this.acceleration += this.movement_right;
     }
+    // les fonction limite sont la pour delimiter l'écran pour pas que le perso sorte de celle ci
     limite(perimetre) {
         // limite pour le bas de l'écran
         while (this.posy + 60.0 > perimetre) {
@@ -77,7 +78,7 @@ export default class Perso {
             break;
         }
     }
-    stop(){
+    stop(){ // la fonction stop met a 0 toute les valeur des force et gravité 
         this.acceleration = 0;
         this.acceleration2 = 0;
         this.speedx = 0;
@@ -87,7 +88,7 @@ export default class Perso {
         this.movement_left = 0;
         this.movement_right = 0;
     }
-    restart(){
+    restart(){  // les fonction restart sont la pour faire repartir les forces et la gravité a leur état initial
         this.acceleration = 0;
         this.acceleration2 = 0;
         this.speedx = 0;

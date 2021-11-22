@@ -1,5 +1,5 @@
 export default class Sprite {
-  // on va créer une class ou l'on va mettre les fonction pour load et draw les img
+  // on va créer une class ou l'on va mettre les fonction pour load et draw les img des sprite (vue en cours)
   constructor(Lx, Ly, posX, posY, RepetX, RepetY) {
     this.Lx = Lx;
     this.Ly = Ly;
@@ -71,7 +71,7 @@ export default class Sprite {
       }
     }
   }
-  drawpercent() {
+  drawpercent() { // draw 1 seul image avec un scale
     if (this.anim_id >= 0) {
       this.ctx.drawImage(
         this.all_img[this.anim_id],
@@ -86,7 +86,7 @@ export default class Sprite {
       );
     }
   }
-  drawScale() {
+  drawScale() { // draw le sprite avec un scale 
     if (this.anim_id >= 0) {
       this.ctx.drawImage(
         this.all_img[this.anim_id],
@@ -109,7 +109,7 @@ export default class Sprite {
       }
     }
   }
-  drawSlice() {
+  drawSlice() { // draw une seul image du sprite
     if (this.anim_id >= 0) {
       this.ctx.drawImage(
         this.all_img[this.anim_id],
