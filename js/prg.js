@@ -1,7 +1,6 @@
 import Perso from "./perso.js";
 import Sprite from "./sprite.js";
 import Tir from "./tir.js";
-import Dio from "./dio.js";
 // definition des variables et sprite que l'on va utiliser
 let cnv = document.getElementById("myCanvas");
 let ctx = cnv.getContext("2d");
@@ -59,11 +58,12 @@ loose.img.onload = function () {
   loose.load();
 };
 
-let dio = new Dio(139.2,120,0,0,19,1);
+let dio = new Sprite(139.2,120,0,0,19,1);
 dio.img.src = "./assets/dio.png";
 dio.img.onload = function () {
   dio.load();
 };
+dio.hp = 50;
 
 let dioknife = new Sprite(200,167,0,0,11,1);
 dioknife.img.src = "./assets/dioknife.png";
@@ -222,6 +222,13 @@ function explosiondio(d){ // fonction qui va draw lexplosion sur le boss de fin 
   }
 }
 
+function scaleimg(img){ // fonction qui va scale le sprite ou limage par rapport a la taille du canvas
+  img.hRatio = cnv.width / img.Lx;
+  img.vRatio = cnv.height / img.Ly;
+  img.centerShift_x = (cnv.width - img.Lx * img.hRatio) / 2;
+  img.centerShift_y = (cnv.height - img.Ly * img.vRatio) / 2;
+}
+
 function bgmove(){  // fonction qui va set les hp robot a 3
   for(let i = 0; i < robotvec.length;i++){
     robotvec[i].hp = 3;
@@ -304,13 +311,6 @@ function changestate() { // change l'état des robot de false a true
 function playback() { // lance la musique de fond du jeu
   var myAudio = new Audio("./assets/fond.mp3");
   myAudio.play();
-}
-
-function scaleZa() { // fonction qui va scale le pouvoir du joueur par rapport a l'écran
-  zawarudo.hRatio = cnv.width / zawarudo.Lx;
-  zawarudo.vRatio = cnv.height / zawarudo.Ly;
-  zawarudo.centerShift_x = (cnv.width - zawarudo.Lx * zawarudo.hRatio) / 2;
-  zawarudo.centerShift_y = (cnv.height - zawarudo.Ly * zawarudo.vRatio) / 2;
 }
 
 function ZaWarudoTokiOTomare() { // fonction qui va draw le pouvoir du joueur
@@ -624,24 +624,15 @@ function starttir2(){ // fonction qui va lancer le tir de la deuxieme arme
 
 
 function level0(){ // initialisation de l'ecran de chargement
-  fond4.hRatio = cnv.width / fond4.Lx;
-  fond4.vRatio = cnv.height / fond4.Ly;
-  fond4.centerShift_x = (cnv.width - fond4.Lx * fond4.hRatio) / 2;
-  fond4.centerShift_y = (cnv.height - fond4.Ly * fond4.vRatio) / 2;
+  scaleimg(fond4);
   fond4.drawScale();
-  starto.hRatio = cnv.width / starto.Lx;
-  starto.vRatio = cnv.height / starto.Ly;
-  starto.centerShift_x = (cnv.width - starto.Lx * starto.hRatio) / 2;
-  starto.centerShift_y = (cnv.height - starto.Ly * starto.vRatio) / 2;
+  scaleimg(starto);
   starto.drawScale();
 }
 
 function level1() { // initialisation du 1er niveau
-  scaleZa();
-  fond2.hRatio = cnv.width / fond2.Lx;
-  fond2.vRatio = cnv.height / fond2.Ly;
-  fond2.centerShift_x = (cnv.width - fond2.Lx * fond2.hRatio) / 2;
-  fond2.centerShift_y = (cnv.height - fond2.Ly * fond2.vRatio) / 2;
+  scaleimg(zawarudo);
+  scaleimg(fond2);
   if(bgs!=0){
     fond2.drawScale();
   }
@@ -773,16 +764,13 @@ function level1() { // initialisation du 1er niveau
 }
 
 function level2() { // initialisation du 2 eme niveau
-  scaleZa();
+  scaleimg(zawarudo);
   robotvec[0].posX = cnv.width - 113;
   beamvec[0].posX = cnv.width - beam.Lx + 80;
   beamvec[1].posX = cnv.width - beam.Lx + 80;
   robotvec[1].posX = cnv.width - 113;
   setTimeout(bgmove,20000);
-  fond3.hRatio = cnv.width / fond3.Lx;
-  fond3.vRatio = cnv.height / fond3.Ly;
-  fond3.centerShift_x = (cnv.width - fond3.Lx * fond3.hRatio) / 2;
-  fond3.centerShift_y = (cnv.height - fond3.Ly * fond3.vRatio) / 2;
+  scaleimg(fond3);
   if(robotvec[0].hp != 3){
     fond3.drawScale();
   }
@@ -827,11 +815,8 @@ function level2() { // initialisation du 2 eme niveau
 }
 
 function level3(){ // initialisation du 3 eme niveau
-  scaleZa();
-  fond.hRatio = cnv.width / fond.Lx;
-  fond.vRatio = cnv.height / fond.Ly;
-  fond.centerShift_x = (cnv.width - fond.Lx * fond.hRatio) / 2;
-  fond.centerShift_y = (cnv.height - fond.Ly * fond.vRatio) / 2;
+  scaleimg(zawarudo);
+  scaleimg(fond);
   fond.drawScale();
   dio.posX = cnv.width-140;
   dioknife.posX = cnv.width-200;
@@ -850,10 +835,7 @@ function level3(){ // initialisation du 3 eme niveau
   }
   if(newarme == true){
     if(diotp.anim_id != 63){
-      diotp.hRatio = cnv.width / diotp.Lx;
-      diotp.vRatio = cnv.height / diotp.Ly;
-      diotp.centerShift_x = (cnv.width - diotp.Lx * diotp.hRatio) / 2;
-      diotp.centerShift_y = (cnv.height - diotp.Ly * diotp.vRatio) / 2;
+      scaleimg(diotp);
       diotp.drawScale();
     }
   }
@@ -907,10 +889,7 @@ function level3(){ // initialisation du 3 eme niveau
       myAudio.play();
     }
     if(roadrollersummon.anim_id != 53){
-      roadrollersummon.hRatio = cnv.width / roadrollersummon.Lx;
-      roadrollersummon.vRatio = cnv.height / roadrollersummon.Ly;
-      roadrollersummon.centerShift_x = (cnv.width - roadrollersummon.Lx * roadrollersummon.hRatio) / 2;
-      roadrollersummon.centerShift_y = (cnv.height - roadrollersummon.Ly * roadrollersummon.vRatio) / 2;
+      scaleimg(roadrollersummon);
       roadrollersummon.drawScale();
       roadroller.posY = -roadroller.Ly;
       roadroller.posX = perso.posx;
@@ -969,10 +948,7 @@ function level3(){ // initialisation du 3 eme niveau
       myAudio.play();
     }
     if(summon.anim_id != 53){
-      summon.hRatio = cnv.width / summon.Lx;
-      summon.vRatio = cnv.height / summon.Ly;
-      summon.centerShift_x = (cnv.width - summon.Lx * summon.hRatio) / 2;
-      summon.centerShift_y = (cnv.height - summon.Ly * summon.vRatio) / 2;
+      scaleimg(summon);
       summon.drawScale();
       muda.posY = perso.posy;
       muda.posX = perso.posx;
@@ -1099,27 +1075,15 @@ function update() {
     level3();
   }
   if(state == 4){
-    fond4.hRatio = cnv.width / fond4.Lx;
-    fond4.vRatio = cnv.height / fond4.Ly;
-    fond4.centerShift_x = (cnv.width - fond4.Lx * fond4.hRatio) / 2;
-    fond4.centerShift_y = (cnv.height - fond4.Ly * fond4.vRatio) / 2;
+    scaleimg(fond4);
     fond4.drawScale();
-    win.hRatio = cnv.width / win.Lx;
-    win.vRatio = cnv.height / win.Ly;
-    win.centerShift_x = (cnv.width - win.Lx * win.hRatio) / 2;
-    win.centerShift_y = (cnv.height - win.Ly * win.vRatio) / 2;
+    scaleimg(win);
     win.drawScale();
   }
   if(state == 5){
-    fond4.hRatio = cnv.width / fond4.Lx;
-    fond4.vRatio = cnv.height / fond4.Ly;
-    fond4.centerShift_x = (cnv.width - fond4.Lx * fond4.hRatio) / 2;
-    fond4.centerShift_y = (cnv.height - fond4.Ly * fond4.vRatio) / 2;
+    scaleimg(fond4);
     fond4.drawScale();
-    loose.hRatio = cnv.width / loose.Lx;
-    loose.vRatio = cnv.height / loose.Ly;
-    loose.centerShift_x = (cnv.width - loose.Lx * loose.hRatio) / 2;
-    loose.centerShift_y = (cnv.height - loose.Ly * loose.vRatio) / 2;
+    scaleimg(loose);
     loose.drawScale();
   }
   setTimeout(() => {

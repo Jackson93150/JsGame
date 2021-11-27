@@ -20,6 +20,8 @@ export default class Sprite {
     this.vRatio = 1.5;
     this.centerShift_x = 0;
     this.centerShift_y = 0;
+    this.knife = 0;
+    this.attack = 0;
   }
   load() {
     let canvas1 = document.createElement("canvas");
